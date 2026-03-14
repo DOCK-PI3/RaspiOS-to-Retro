@@ -35,21 +35,10 @@ cd ~
 git clone --depth 1 https://github.com/libretro/RetroArch.git
 cd RetroArch
 ./fetch-submodules.sh
-#./configure --enable-floathard --enable-neon --enable-7zip --enable-vulkan --enable-wayland
-#make -j$(nproc)
-#sudo make install
-#cd ..
 # DESCARGAR RETROARCH EN SU ULTIMA VERSION --->
-#cd && git clone --recursive https://github.com/libretro/RetroArch
-# PARA 32BITS # CFLAGS="-mfpu=neon" ./configure --disable-videocore --enable-opengl --disable-opengl1 --enable-alsa --enable-udev --disable-opengles --enable-neon
-# PARA 32BITS # CFLAGS="-mfpu=neon" ./configure --disable-opengl1 --enable-neon --enable-opengles3 --enable-opengles --enable-udev --disable-videocore --enable-kms --enable-egl
-# PARA 64BITS #
-# SIN ESCRITORIO # ./configure --enable-kms --enable-egl 
-# OPTIONAL CONFIG # ./configure --disable-vulkan --disable-ffmpeg --enable-xmb --disable-materialui --disable-flac --disable-parport --disable-vulkan_display --disable-videocore --disable-videoprocessor --disable-v4l2 --enable-x11 --disable-wayland --disable-vg --disable-jack --enable-kms --disable-discord
-# EXPORTAR VARIABLES PARA ESTA SESION ---> OPCION NUEVA WAYLAND, ACTIVAR SU FUNCION EN RASPI-CONFIG Y REINICIAR EL SISTEMA
 export CFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
 export CXXFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
-./configure --disable-caca --enable-floathard --enable-neon --enable-7zip --disable-vg --disable-opengl1 --disable-dispmanx --enable-x11 --enable-wayland --disable-sdl --enable-sdl2 --enable-ffmpeg --enable-udev --enable-pulse --enable-freetype --enable-7zip --disable-videocore --enable-udev --enable-alsa --enable-opengles --enable-vulkan --enable-opengl
+./configure --enable-floathard --enable-neon --enable-7zip --enable-x11 --enable-wayland --enable-sdl2 --enable-ffmpeg --enable-udev --enable-pulse --enable-freetype --enable-alsa --enable-opengles --enable-vulkan --enable-opengl
 make -j4
 sudo make install
 #cd && sudo rm -R RetroArch/
@@ -68,7 +57,7 @@ libavcodec-dev libavformat-dev libswresample-dev libpugixml-dev
 sudo apt-get -y install clang-format cmake gettext libharfbuzz-dev libicu-dev libsdl2-dev libavcodec-dev libavfilter-dev libavformat-dev libavutil-dev libfreeimage-dev libfreetype6-dev libgit2-dev libcurl4-openssl-dev libpugixml-dev libasound2-dev libbluetooth-dev libgl1-mesa-dev libpoppler-cpp-dev
  
 # 1,2. seleccionar clang para compilar
-sudo update-alternatives --config c++
+#sudo update-alternatives --config c++
 
 # --- 2. CLONAR REPOSITORIO ---
 cd ~
@@ -80,10 +69,6 @@ cd emulationstation-de
 # Usamos -O3 para máxima optimización de velocidad
 echo "Compilando ES-DE con optimizaciones de CPU (esto tardará un poco)..."
 
-# cmake -DCMAKE_BUILD_TYPE=Release \
-#     -DCMAKE_CXX_FLAGS="-march=native -O3 -pipe" \
-#     -DCMAKE_C_FLAGS="-march=native -O3 -pipe" ..
-
 cmake -DGLES=on -DVIDEO_HW_DECODING=on -DDEINIT_ON_LAUNCH=on .
 make -j$(nproc)
 
@@ -93,8 +78,8 @@ sudo make install
 
 # --- 5. CONFIGURACIÓN DE RENDIMIENTO GRÁFICO ---
 # ES-DE en Pi 5 vuela con el renderizador de hardware habilitado
-mkdir -p ~/.emulationstation/settings
-cat <<EOF > ~/.emulationstation/settings/es_settings.xml
+mkdir -p ~/ES-DE/settings
+cat <<EOF > ~/ES-DE/settings/es_settings.xml
 <?xml version="1.0"?>
 <config>
     <string name="Renderer" value="OpenGL" />
@@ -119,15 +104,15 @@ sudo apt-get install -y gstreamer1.0-omx-* gstreamer1.0-plugins-bad
 # Dependencia para hacer el make y ejecutar retrofe en buster RPI4 - retrofe #
 # ----> sudo Xorg :0 -configure uuu :0.0
 sudo apt-get install -y xinit xterm xorg xorg-dev xorg-server-source menu openbox obconf thunar pulseaudio pulseaudio-utils
-sudo apt-get install -y git g++ cmake golang dos2unix zlib1g-dev libsdl2* zlib1g-dev libglib2.0-0 libglib2.0-dev sqlite3
+sudo apt-get install -y git g++ cmake dos2unix zlib1g-dev libsdl2* zlib1g-dev libglib2.0-0 libglib2.0-dev sqlite3
 #Descargar y vlc y mpv
 sudo apt install -y mpv xserver-xorg xinit xorg xorg-dev x11-xserver-utils xorg-server xorg-xinit
-cat <<EOF > ~/.xinitrc
-exec es-de
-EOF
+#cat <<EOF > ~/.xinitrc
+#exec openbox es-de
+#EOF
 
 # Añadir a bash_profile para que arranque al loguearse en Lite
-echo 'if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then startx; fi' >> ~/.bash_profile
+#echo 'if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then startx; fi' >> ~/.bash_profile
 
 
 
@@ -148,10 +133,11 @@ CORES=(
   "genesis_plus_gx_libretro.so.zip" # Genesis/Mega Drive
   "fbneo_libretro.so.zip"           # Arcade/NeoGeo
   "duckstation_libretro.so.zip"     # PS1 (Con reescalado 4K)
-  "mgba_libretro.so.zip"            # GameBoy Advance
+  "mgba_libretro.so.zip"            # GameBoy Advance 
+  "geolith_libretro.so.zip"            # geolith libretro
 )
 
-BASE_URL="https://buildbot.libretro.com"
+BASE_URL="https://github.com/christianhaitian/retroarch-cores/tree/master/aarch64/"
 
 for core in "${CORES[@]}"; do
     echo "Descargando core: $core"
@@ -173,8 +159,8 @@ EOF
 
 # --- VINCULACIÓN CON EMULATIONSTATION-DE ---
 # Creamos el archivo de configuración de sistemas para que ES-DE use nuestros cores
-mkdir -p ~/.emulationstation/custom_systems
-cat <<EOF > ~/.emulationstation/es_systems.xml
+mkdir -p ~/ES-DE/custom_systems
+cat <<EOF > ~/ES-DE/es_systems.xml
 <systemList>
     <system>
         <name>psx</name>
@@ -189,70 +175,8 @@ cat <<EOF > ~/.emulationstation/es_systems.xml
 EOF
 
 echo "Cores instalados y configurados para Vulkan."
-
-
-# 1. Configuración de Arquitectura Pi 5 (Cortex-A76)
-export CFLAGS="-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize"
-export CXXFLAGS="$CFLAGS"
-export MAKEFLAGS="-j$(nproc)"
-CORE_DIR="$HOME/.config/retroarch/cores"
-mkdir -p "$CORE_DIR"
-
-# 2. Instalación de dependencias de compilación
-sudo apt update && sudo apt install -y git build-essential cmake pkg-config \
-libgles2-mesa-dev libgbm-dev libdrm-dev libasound2-dev libudev-dev \
-libfreetype6-dev libxml2-dev libx11-dev libxkbcommon-dev libvulkan-dev
-
-# 3. Función para clonar y compilar cada core
-compile_core() {
-    REPO_URL=$1
-    DIR_NAME=$2
-    echo "--- Compilando $DIR_NAME ---"
-    cd ~
-    git clone --depth 1 "$REPO_URL" "$DIR_NAME"
-    cd "$DIR_NAME"
-    
-    # Intentar compilar (la mayoría usa Makefile, algunos CMake)
-    if [ -f "Makefile.libretro" ]; then
-        make -f Makefile.libretro
-    elif [ -f "Makefile" ]; then
-        make
-    else
-        mkdir build && cd build && cmake .. && make
-    fi
-
-    # Mover el binario optimizado y limpiar
-    find . -name "*_libretro.so" -exec cp {} "$CORE_DIR/" \;
-    cd ~
-    rm -rf "$DIR_NAME"
-}
-
-# 4. Lista de Cores (Añade todos los que necesites aquí)
-# Estos son los esenciales que cubren casi todo:
-cores=(
-    "https://github.com/libretro/ n64"
-    "https://github.com/libretro flycast"
-    "https://github.com/libretro ppsspp"
-    "https://github.com/libretro duckstation"
-    "https://github.com/libretro snes9x"
-    "https://github.com/libretro genesis"
-    "https://github.com/libretro fbneo"
-    "https://github.com/libretro/ mgba"
-    "https://github.com/libretro ps1_accuracy"
-    "https://github.com/libretro picodrive"
-    "https://github.com/libretro/ pcsx_rearmed"
-    "https://github.com/libretro/ dolphin"
-)
-
-for core in "${cores[@]}"; do
-    compile_core $core
-done
-
-echo "Todos los cores compilados y optimizados en $CORE_DIR"
-
-
-
-
-echo "Instalación finalizada. Reiniciando.... " sleep 3
+sleep 2
+echo "Instalación finalizada. Reiniciando.... " 
+sleep 3
 
 #sudo reboot
