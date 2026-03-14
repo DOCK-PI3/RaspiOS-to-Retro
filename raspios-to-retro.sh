@@ -39,6 +39,11 @@ echo "Instalando dependencias necesarias..."
 sudo apt install -y build-essential git libx11-xcb-dev libudev-dev libegl-dev libgles-dev libasound2-dev libpulse-dev libdrm-dev libgbm-dev libfreetype6-dev libxkbcommon-dev libxml2-dev zlib1g-dev libavcodec-dev libavformat-dev libswscale-dev libavdevice-dev libvulkan-dev mesa-vulkan-drivers yasm libpng-dev zlib1g-dev libxkbcommon-dev libsdl2-dev libasound2-dev libusb-1.0-0-dev
 sudo apt install -y libc6-dev libc6-dev-arm64-cross libsigc++-3.0-dev
 
+# INSTALAR DEPENDENCIAS DESPUES DE ACTUALIZAR LISTA DE PAQUETES --->
+sudo apt install -y build-essential libasound2-dev libudev-dev libxkbcommon-dev zlib1g-dev libfreetype6-dev libegl1-mesa-dev libgles2-mesa-dev libgbm-dev libavcodec-dev libsdl2-dev libsdl-image1.2-dev libxml2-dev yasm libavformat-dev libavdevice-dev libswresample-dev libavresample-dev libswscale-dev libv4l-dev libgl*-mesa-dev
+sudo apt install -y xcb libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev
+sudo apt install -y libusb-1.0-0-dev libraspberrypi-dev
+
 # Clonar repositorio oficial
 if [ ! -d "RetroArch" ]; then
     git clone --depth 1 https://github.com/libretro/RetroArch.git
@@ -52,7 +57,7 @@ echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
 #./configure --enable-vulkan --enable-kms --enable-egl --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
 ./configure --disable-x11 --disable-wayland --enable-kms --enable-egl --enable-vulkan --disable-sdl --enable-sdl2 --disable-oss --disable-al --disable-jack --disable-qt --enable-builtinmbedtls
 echo "Compilando (esto puede tardar unos minutos)..."
-make -j$(nproc)
+make -j$(nproc) HAVE_NEON=0
 
 echo "Instalando RetroArch..."
 sudo make install
