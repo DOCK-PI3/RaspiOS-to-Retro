@@ -44,9 +44,23 @@ sudo apt install -y build-essential libasound2-dev libudev-dev libxkbcommon-dev 
 sudo apt install -y xcb-proto libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev
 sudo apt install -y libusb-1.0-0-dev
 
-sudo apt install snapd -y
-sudo snap install snapd
-sudo snap install retroarch
+# Clonar repositorio oficial
+if [ ! -d "RetroArch" ]; then
+    git clone --depth 1 https://github.com/libretro/RetroArch.git
+fi
+
+cd RetroArch
+export CFLAGS="-march=armv8-a+crc+simd -O3"
+export CXXFLAGS="-march=armv8-a+crc+simd -O3"
+echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
+# Optimizaciones específicas para RPi 5 y desactivación de X11
+#./configure --enable-vulkan --enable-kms --enable-egl --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
+./configure --enable-kms --enable-egl --enable-vulkan --disable-sdl --enable-sdl2 --disable-oss --disable-al --disable-jack --disable-qt --enable-builtinmbedtls
+echo "Compilando (esto puede tardar unos minutos)..."
+make -j$(nproc) HAVE_NEON=0
+
+echo "Instalando RetroArch..."
+sudo make install
 
 echo "Instalación completada. Puedes iniciar con el comando: retroarch"
 
@@ -55,7 +69,7 @@ echo "Instalando EmulationStation-DE..."
 
 # --- 1. PREPARACIÓN Y DEPENDENCIAS DE COMPILACIÓN ---
 echo "Instalando herramientas de compilación para Pi 5..."
-sudo apt install -y git cmake pkg-config libfreeimage-dev \
+sudo apt install -y build-essential git cmake pkg-config libfreeimage-dev \
 libfreetype6-dev libcurl4-openssl-dev libasound2-dev libicu-dev \
 libsdl2-dev libvlc-dev libvlccore-dev libpoppler-cpp-dev \
 libavcodec-dev libavformat-dev libswresample-dev libpugixml-dev
