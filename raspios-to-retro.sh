@@ -50,7 +50,7 @@ cd RetroArch
 
 echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
 # Optimizaciones específicas para RPi 5 y desactivación de X11
-CFLAGS="-march=native -O3" ./configure --enable-vulkan --enable-kms --enable-egl --enable-gbm --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
+CFLAGS="-march=native -O3" ./configure --enable-vulkan --enable-kms --enable-egl --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
 
 echo "Compilando (esto puede tardar unos minutos)..."
 make -j$(nproc)
