@@ -37,6 +37,7 @@ set -e
 echo "Actualizando el sistema..."
 echo "Instalando dependencias necesarias..."
 sudo apt install -y build-essential git libx11-xcb-dev libudev-dev libegl-dev libgles-dev libasound2-dev libpulse-dev libdrm-dev libgbm-dev libfreetype6-dev libxkbcommon-dev libxml2-dev zlib1g-dev libavcodec-dev libavformat-dev libswscale-dev libavdevice-dev libvulkan-dev mesa-vulkan-drivers yasm libpng-dev zlib1g-dev libxkbcommon-dev libsdl2-dev libasound2-dev libusb-1.0-0-dev
+sudo apt install -y libc6-dev libc6-dev-arm64-cross libsigc++-3.0-dev
 
 # Clonar repositorio oficial
 if [ ! -d "RetroArch" ]; then
@@ -44,11 +45,12 @@ if [ ! -d "RetroArch" ]; then
 fi
 
 cd RetroArch
-export CFLAGS="-Ofast -mcpu=cortex-a76 -mtune=cortex-a76"
+export CFLAGS="-march=armv8-a+crc+simd -O3"
+export CXXFLAGS="-march=armv8-a+crc+simd -O3"
 echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
 # Optimizaciones específicas para RPi 5 y desactivación de X11
-./configure --enable-vulkan --enable-kms --enable-egl --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
-
+#./configure --enable-vulkan --enable-kms --enable-egl --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
+./configure --disable-x11 --disable-wayland --enable-kms --enable-egl --enable-vulkan --enable-floathard
 echo "Compilando (esto puede tardar unos minutos)..."
 make -j$(nproc)
 
