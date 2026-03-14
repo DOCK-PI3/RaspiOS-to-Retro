@@ -42,7 +42,7 @@ sudo apt install -y libc6-dev libc6-dev-arm64-cross libsigc++-3.0-dev
 # INSTALAR DEPENDENCIAS DESPUES DE ACTUALIZAR LISTA DE PAQUETES --->
 sudo apt install -y build-essential libasound2-dev libudev-dev libxkbcommon-dev zlib1g-dev libfreetype6-dev libegl1-mesa-dev libgles2-mesa-dev libgbm-dev libavcodec-dev libsdl2-dev libsdl-image1.2-dev libxml2-dev yasm libavformat-dev libavdevice-dev libswresample-dev libswscale-dev libv4l-dev libgl*-mesa-dev
 sudo apt install -y xcb-proto libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev
-sudo apt install -y libusb-1.0-0-dev libraspberrypi-dev
+sudo apt install -y libusb-1.0-0-dev
 
 # Clonar repositorio oficial
 if [ ! -d "RetroArch" ]; then
