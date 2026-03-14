@@ -47,8 +47,8 @@ cd RetroArch
 # SIN ESCRITORIO # ./configure --enable-kms --enable-egl 
 # OPTIONAL CONFIG # ./configure --disable-vulkan --disable-ffmpeg --enable-xmb --disable-materialui --disable-flac --disable-parport --disable-vulkan_display --disable-videocore --disable-videoprocessor --disable-v4l2 --enable-x11 --disable-wayland --disable-vg --disable-jack --enable-kms --disable-discord
 # EXPORTAR VARIABLES PARA ESTA SESION ---> OPCION NUEVA WAYLAND, ACTIVAR SU FUNCION EN RASPI-CONFIG Y REINICIAR EL SISTEMA
-export CFLAGS='-march=armv8-a+fp+simd+sb+predres+crypto+crc -mcpu=cortex-a72 -mtune=cortex-a72 -O3 -funsafe-math-optimizations'
-export CXXFLAGS='-march=armv8-a+fp+simd+sb+predres+crypto+crc -mcpu=cortex-a72 -mtune=cortex-a72 -O3 -funsafe-math-optimizations'
+export CFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
+export CXXFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
 ./configure --disable-caca --enable-floathard --enable-neon --enable-7zip --disable-vg --disable-opengl1 --disable-dispmanx --enable-x11 --enable-wayland --disable-sdl --enable-sdl2 --enable-ffmpeg --enable-udev --enable-pulse --enable-freetype --enable-7zip --disable-videocore --enable-udev --enable-alsa --enable-opengles --enable-vulkan --enable-opengl
 make -j4
 sudo make install
