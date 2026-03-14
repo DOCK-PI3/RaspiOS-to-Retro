@@ -22,7 +22,7 @@ python3-dev libusb-1.0-0-dev liblua5.3-dev libavcodec-dev libavformat-dev
 # 3. Instalación de RetroArch (Compilado para Pi 5)
 echo "Compilando RetroArch..."
 cd ~
-git clone --depth 1 https://github.com
+git clone --depth 1 https://github.com/libretro/RetroArch.git
 cd RetroArch
 ./fetch-submodules.sh
 ./configure --enable-floathard --enable-neon --enable-7zip --enable-vulkan --enable-wayland
@@ -217,6 +217,6 @@ echo "Todos los cores compilados y optimizados en $CORE_DIR"
 
 
 
-echo "Instalación finalizada. Reiniciando.... "
+echo "Instalación finalizada. Reiniciando.... " sleep 3
 
 sudo reboot
