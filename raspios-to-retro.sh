@@ -32,15 +32,9 @@ cd ..
 
 # 4. Instalación de EmulationStation-DE
 echo "Instalando EmulationStation-DE..."
-# Descargamos el .deb oficial para AppImage/Debian
-#LATEST_ESDE=$(curl -s https://api.github.com | grep "browser_download_url.*arm64.deb" | cut -d : -f 2,3 | tr -d \")
-#wget -O es-de.deb $LATEST_ESDE
-#sudo apt install ./es-de.deb -y
-#!/bin/bash
 
 # --- 1. PREPARACIÓN Y DEPENDENCIAS DE COMPILACIÓN ---
 echo "Instalando herramientas de compilación para Pi 5..."
-sudo apt update
 sudo apt install -y build-essential git cmake pkg-config libfreeimage-dev \
 libfreetype6-dev libcurl4-openssl-dev libasound2-dev libicu-dev \
 libsdl2-dev libvlc-dev libvlccore-dev libcommon-vlc-dev libpoppler-cpp-dev \
