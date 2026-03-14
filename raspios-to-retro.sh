@@ -59,7 +59,6 @@ cd emulationstation-de
 # Usamos -march=native para que use todas las instrucciones de la Pi 5 (ARMv8.2-A)
 # Usamos -O3 para máxima optimización de velocidad
 echo "Compilando ES-DE con optimizaciones de CPU (esto tardará un poco)..."
-mkdir build && cd build
 
 cmake -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_CXX_FLAGS="-march=native -O3 -pipe" \
