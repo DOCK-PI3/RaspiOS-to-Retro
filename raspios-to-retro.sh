@@ -55,7 +55,7 @@ export CXXFLAGS="-march=armv8-a+crc+simd -O3"
 echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
 # Optimizaciones específicas para RPi 5 y desactivación de X11
 #./configure --enable-vulkan --enable-kms --enable-egl --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
-./configure --enable-kms --enable-egl --enable-vulkan --disable-sdl --enable-sdl2 --disable-oss --disable-al --disable-jack --disable-qt --enable-builtinmbedtls
+./configure --enable-kms --enable-egl --enable-vulkan --disable-sdl --enable-sdl2 --disable-oss --enable-x11 --enable-wayland --disable-al --disable-jack --disable-qt --enable-builtinmbedtls
 echo "Compilando (esto puede tardar unos minutos)..."
 make -j$(nproc) HAVE_NEON=0
 
