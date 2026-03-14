@@ -29,21 +29,38 @@ sudo apt install -y build-essential git cmake libasound2-dev libpulse-dev libway
 # 3. Instalación de RetroArch (Compilado para Pi 5)
 echo "Compilando RetroArch..."
 cd ~
-git clone --depth 1 https://github.com/libretro/RetroArch.git
+
+# Script para instalar RetroArch en RPi 5 (OS Lite 64-bit) modo KMS
+
+set -e
+
+echo "Actualizando el sistema..."
+sudo apt update && sudo apt upgrade -y
+
+echo "Instalando dependencias necesarias..."
+sudo apt install -y git build-essential devscripts libusb-1.0-0-dev \
+libudev-dev libavformat-dev libavcodec-dev libswscale-dev \
+libasound2-dev libpulse-dev libvulkan-dev libgbm-dev libdrm-dev \
+libxkbcommon-dev libwayland-dev wayland-protocols
+
+# Clonar repositorio oficial
+if [ ! -d "RetroArch" ]; then
+    git clone --depth 1 https://github.com/libretro/RetroArch.git
+fi
+
 cd RetroArch
-./fetch-submodules.sh
-# DESCARGAR RETROARCH EN SU ULTIMA VERSION --->
-#export CFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
-#export CXXFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
-#./configure --enable-floathard --enable-7zip --enable-x11 --enable-wayland --enable-vulkan --enable-opengl
-#make -j4
-#sudo make install
-#cd && sudo rm -R RetroArch/
-export CFLAGS="-Ofast -mcpu=cortex-a76 -mtune=cortex-a76"
-./configure --enable-vulkan --enable-egl --enable-gbm --enable-drm --enable-kms \
-            --disable-x11 --disable-wayland --enable-floathard --enable-neon
+
+echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
+# Optimizaciones específicas para RPi 5 y desactivación de X11
+./configure --enable-kms --enable-egl --enable-drm --enable-vulkan --disable-x11 --enable-udev --enable-alsa --enable-floathard --enable-neon
+
+echo "Compilando (esto puede tardar unos minutos)..."
 make -j$(nproc)
+
+echo "Instalando RetroArch..."
 sudo make install
+
+echo "Instalación completada. Puedes iniciar con el comando: retroarch"
 
 # 4. Instalación de EmulationStation-DE
 echo "Instalando EmulationStation-DE..."
@@ -66,8 +83,6 @@ git clone https://gitlab.com/es-de/emulationstation-de.git
 cd emulationstation-de
 
 # --- 3. COMPILACIÓN OPTIMIZADA ---
-# Usamos -march=native para que use todas las instrucciones de la Pi 5 (ARMv8.2-A)
-# Usamos -O3 para máxima optimización de velocidad
 echo "Compilando ES-DE con optimizaciones de CPU (esto tardará un poco)..."
 
 cmake -DGLES=on -DVIDEO_HW_DECODING=on -DDEINIT_ON_LAUNCH=on .
