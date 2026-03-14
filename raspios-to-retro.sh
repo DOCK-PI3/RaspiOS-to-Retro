@@ -35,10 +35,25 @@ cd ~
 git clone --depth 1 https://github.com/libretro/RetroArch.git
 cd RetroArch
 ./fetch-submodules.sh
-./configure --enable-floathard --enable-neon --enable-7zip --enable-vulkan --enable-wayland
-make -j$(nproc)
+#./configure --enable-floathard --enable-neon --enable-7zip --enable-vulkan --enable-wayland
+#make -j$(nproc)
+#sudo make install
+#cd ..
+# DESCARGAR RETROARCH EN SU ULTIMA VERSION --->
+#cd && git clone --recursive https://github.com/libretro/RetroArch
+# PARA 32BITS # CFLAGS="-mfpu=neon" ./configure --disable-videocore --enable-opengl --disable-opengl1 --enable-alsa --enable-udev --disable-opengles --enable-neon
+# PARA 32BITS # CFLAGS="-mfpu=neon" ./configure --disable-opengl1 --enable-neon --enable-opengles3 --enable-opengles --enable-udev --disable-videocore --enable-kms --enable-egl
+# PARA 64BITS #
+# SIN ESCRITORIO # ./configure --enable-kms --enable-egl 
+# OPTIONAL CONFIG # ./configure --disable-vulkan --disable-ffmpeg --enable-xmb --disable-materialui --disable-flac --disable-parport --disable-vulkan_display --disable-videocore --disable-videoprocessor --disable-v4l2 --enable-x11 --disable-wayland --disable-vg --disable-jack --enable-kms --disable-discord
+# EXPORTAR VARIABLES PARA ESTA SESION ---> OPCION NUEVA WAYLAND, ACTIVAR SU FUNCION EN RASPI-CONFIG Y REINICIAR EL SISTEMA
+export CFLAGS='-march=armv8-a+fp+simd+sb+predres+crypto+crc -mcpu=cortex-a72 -mtune=cortex-a72 -O3 -funsafe-math-optimizations'
+export CXXFLAGS='-march=armv8-a+fp+simd+sb+predres+crypto+crc -mcpu=cortex-a72 -mtune=cortex-a72 -O3 -funsafe-math-optimizations'
+./configure --disable-caca --enable-floathard --enable-neon --enable-7zip --disable-vg --disable-opengl1 --disable-dispmanx --enable-x11 --enable-wayland --disable-sdl --enable-sdl2 --enable-ffmpeg --enable-udev --enable-pulse --enable-freetype --enable-7zip --disable-videocore --enable-udev --enable-alsa --enable-opengles --enable-vulkan --enable-opengl
+make -j4
 sudo make install
-cd ..
+#cd && sudo rm -R RetroArch/
+
 
 # 4. Instalación de EmulationStation-DE
 echo "Instalando EmulationStation-DE..."
@@ -93,8 +108,20 @@ echo "ES-DE compilado e instalado con éxito."
 
 
 # 5. Configuración de Auto-Arranque (Modo Kiosk)
-echo "Configurando arranque directo a ES-DE..."
-sudo apt install -y xserver-xorg xinit xorg xorg-dev x11-xserver-utils xorg-server xorg-xinit
+echo "Configurando mini escritorio y arranque directo a ES-DE..."
+sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y libx264-dev libjpeg-dev neofetch
+# install the remaining plugins
+sudo apt-get install -y libgstreamer1.0-0 libgstreamer-gl1.0-0 libgstreamer-plugins-base1.0-0 gstreamer1.0-gl gstreamer1.0-pulseaudio gstreamer1.0-plugins-good 
+sudo apt-get install -y git g++ cmake dos2unix zlib1g-dev libsdl2-2.0 libsdl2-mixer-2.0 libsdl2-image-2.0 libsdl2-ttf-2.0
+sudo apt-get install -y libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+sudo apt-get install -y gstreamer1.0-libav zlib1g-dev libglib2.0-0 libglib2.0-dev libavcodec-extra sqlite3
+sudo apt-get install -y gstreamer1.0-omx-* gstreamer1.0-plugins-bad
+# Dependencia para hacer el make y ejecutar retrofe en buster RPI4 - retrofe #
+# ----> sudo Xorg :0 -configure uuu :0.0
+sudo apt-get install -y xinit xterm xorg xorg-dev xorg-server-source menu openbox obconf thunar pulseaudio pulseaudio-utils
+sudo apt-get install -y git g++ cmake golang dos2unix zlib1g-dev libsdl2* zlib1g-dev libglib2.0-0 libglib2.0-dev sqlite3
+#Descargar y vlc y mpv
+sudo apt install -y mpv xserver-xorg xinit xorg xorg-dev x11-xserver-utils xorg-server xorg-xinit
 cat <<EOF > ~/.xinitrc
 exec es-de
 EOF
