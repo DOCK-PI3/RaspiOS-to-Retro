@@ -1,5 +1,15 @@
 #!/bin/bash
 ### Creado por DockPi3 15-03-2026
+####################################
+#set -o xtrace # Realiza una traza de lo que se ha ejecutado. Es para depurar ,ver donde y porque se está produciendo un error.
+#set -o errexit # Se sale del script inmediatamente cuando falla un comando.
+
+# 0. check root, not permited !
+if [ "$EUID" -eq 0 ]
+  then echo "Don't run script as root."
+  exit
+fi
+
 # 1. Optimización del Kernel y Firmware
 echo "Configurando Overclock y Video para Pi 5..."
 sudo apt update && sudo apt upgrade -y
@@ -79,9 +89,9 @@ echo "ES-DE compilado e instalado con éxito."
 
 # 5. Configuración de Auto-Arranque (Modo Kiosk)
 echo "Configurando arranque directo a ES-DE..."
-sudo apt install -y xserver-xorg xinit x11-xserver-utils
+sudo apt install -y xserver-xorg xinit xorg xorg-dev x11-xserver-utils
 cat <<EOF > ~/.xinitrc
-exec emulationstation
+exec es-de
 EOF
 
 # Añadir a bash_profile para que arranque al loguearse en Lite
@@ -188,18 +198,18 @@ compile_core() {
 # 4. Lista de Cores (Añade todos los que necesites aquí)
 # Estos son los esenciales que cubren casi todo:
 cores=(
-    "https://github.com n64"
-    "https://github.com flycast"
-    "https://github.com ppsspp"
-    "https://github.com duckstation"
-    "https://github.com snes9x"
-    "https://github.com genesis"
-    "https://github.com fbneo"
-    "https://github.com mgba"
-    "https://github.com ps1_accuracy"
-    "https://github.com picodrive"
-    "https://github.com pcsx_rearmed"
-    "https://github.com dolphin"
+    "https://github.com/libretro/ n64"
+    "https://github.com/libretro flycast"
+    "https://github.com/libretro ppsspp"
+    "https://github.com/libretro duckstation"
+    "https://github.com/libretro snes9x"
+    "https://github.com/libretro genesis"
+    "https://github.com/libretro fbneo"
+    "https://github.com/libretro/ mgba"
+    "https://github.com/libretro ps1_accuracy"
+    "https://github.com/libretro picodrive"
+    "https://github.com/libretro/ pcsx_rearmed"
+    "https://github.com/libretro/ dolphin"
 )
 
 for core in "${cores[@]}"; do
@@ -213,4 +223,4 @@ echo "Todos los cores compilados y optimizados en $CORE_DIR"
 
 echo "Instalación finalizada. Reiniciando.... " sleep 3
 
-sudo reboot
+#sudo reboot
