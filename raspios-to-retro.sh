@@ -47,8 +47,13 @@ echo "Instalando EmulationStation-DE..."
 echo "Instalando herramientas de compilación para Pi 5..."
 sudo apt install -y build-essential git cmake pkg-config libfreeimage-dev \
 libfreetype6-dev libcurl4-openssl-dev libasound2-dev libicu-dev \
-libsdl2-dev libvlc-dev libvlccore-dev libcommon-vlc-dev libpoppler-cpp-dev \
+libsdl2-dev libvlc-dev libvlccore-dev libpoppler-cpp-dev \
 libavcodec-dev libavformat-dev libswresample-dev libpugixml-dev
+
+sudo apt-get -y install clang-format cmake gettext libharfbuzz-dev libicu-dev libsdl2-dev libavcodec-dev libavfilter-dev libavformat-dev libavutil-dev libfreeimage-dev libfreetype6-dev libgit2-dev libcurl4-openssl-dev libpugixml-dev libasound2-dev libbluetooth-dev libgl1-mesa-dev libpoppler-cpp-dev
+ 
+# 1,2. seleccionar clang para compilar
+sudo update-alternatives --config c++
 
 # --- 2. CLONAR REPOSITORIO ---
 cd ~
@@ -60,10 +65,11 @@ cd emulationstation-de
 # Usamos -O3 para máxima optimización de velocidad
 echo "Compilando ES-DE con optimizaciones de CPU (esto tardará un poco)..."
 
-cmake -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_CXX_FLAGS="-march=native -O3 -pipe" \
-      -DCMAKE_C_FLAGS="-march=native -O3 -pipe" ..
+# cmake -DCMAKE_BUILD_TYPE=Release \
+#     -DCMAKE_CXX_FLAGS="-march=native -O3 -pipe" \
+#     -DCMAKE_C_FLAGS="-march=native -O3 -pipe" ..
 
+cmake -DGLES=on -DVIDEO_HW_DECODING=on -DDEINIT_ON_LAUNCH=on .
 make -j$(nproc)
 
 # --- 4. INSTALACIÓN ---
@@ -88,7 +94,7 @@ echo "ES-DE compilado e instalado con éxito."
 
 # 5. Configuración de Auto-Arranque (Modo Kiosk)
 echo "Configurando arranque directo a ES-DE..."
-sudo apt install -y xserver-xorg xinit xorg xorg-dev x11-xserver-utils
+sudo apt install -y xserver-xorg xinit xorg xorg-dev x11-xserver-utils xorg-server xorg-xinit
 cat <<EOF > ~/.xinitrc
 exec es-de
 EOF
