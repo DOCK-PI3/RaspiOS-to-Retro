@@ -26,7 +26,7 @@ EOF'
 echo "Instalando dependencias y drivers Mesa (Vulkan)..."
 sudo apt install -y build-essential git cmake libasound2-dev libpulse-dev \
 libwayland-dev libx11-dev libxkbcommon-dev libegl1-mesa-dev \
-libgles2-mesa-dev libgbm-dev libdrm-dev mesa-vulkan-drivers \
+libgles2-mesa-dev libgbm-dev libdrm-dev mesa-vulkan-drivers ffmpeg \
 python3-dev libusb-1.0-0-dev liblua5.3-dev libavcodec-dev libavformat-dev
 
 # 3. Instalación de RetroArch (Compilado para Pi 5)
@@ -106,45 +106,7 @@ sudo apt-get install -y gstreamer1.0-omx-* gstreamer1.0-plugins-bad
 sudo apt-get install -y xinit xterm xorg xorg-dev xorg-server-source menu openbox obconf thunar pulseaudio pulseaudio-utils
 sudo apt-get install -y git g++ cmake dos2unix zlib1g-dev libsdl2* zlib1g-dev libglib2.0-0 libglib2.0-dev sqlite3
 #Descargar y vlc y mpv
-sudo apt install -y mpv xserver-xorg xinit xorg xorg-dev x11-xserver-utils xorg-server xorg-xinit
-#cat <<EOF > ~/.xinitrc
-#exec openbox es-de
-#EOF
-
-# Añadir a bash_profile para que arranque al loguearse en Lite
-#echo 'if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then startx; fi' >> ~/.bash_profile
-
-
-
-# --- INSTALACIÓN DE CORES OPTIMIZADOS (64-BIT),primero busca en la web oficial,si no encuentra ninguno los compila uno a uno ---
-# seguramente elimine este trozo d codigo q busca en la web oficial los cores y los descarga.. mejor compilar aunque tarde mas.
-echo "Instalando y configurando los mejores cores para Raspberry Pi 5..."
-
-# Crear directorios necesarios
-mkdir -p ~/.config/retroarch/cores
-mkdir -p ~/.config/retroarch/config
-
-# Lista de cores de alto rendimiento (Libretro Buildbot)
-CORES=(
-  "mupen64plus_next_libretro.so.zip" # Nintendo 64 (Optimizado)
-  "flycast_libretro.so.zip"          # Dreamcast/Naomi (Vulkan)
-  "ppsspp_libretro.so.zip"          # PSP (Máximo rendimiento)
-  "snes9x_libretro.so.zip"          # SNES (Precisión y velocidad)
-  "genesis_plus_gx_libretro.so.zip" # Genesis/Mega Drive
-  "fbneo_libretro.so.zip"           # Arcade/NeoGeo
-  "duckstation_libretro.so.zip"     # PS1 (Con reescalado 4K)
-  "mgba_libretro.so.zip"            # GameBoy Advance 
-  "geolith_libretro.so.zip"            # geolith libretro
-)
-
-BASE_URL="https://github.com/christianhaitian/retroarch-cores/tree/master/aarch64/"
-
-for core in "${CORES[@]}"; do
-    echo "Descargando core: $core"
-    wget -q "${BASE_URL}${core}" -P ~/.config/retroarch/cores
-    unzip -o "~/.config/retroarch/cores/$core" -d ~/.config/retroarch/cores
-    rm "~/.config/retroarch/cores/$core"
-done
+sudo apt install -y mpv xserver-xorg x11-xserver-utils
 
 # --- CONFIGURACIÓN DE VIDEO VULKAN (CLAVE PARA PI 5) ---
 # Forzamos a RetroArch a usar Vulkan y el driver de video correcto
