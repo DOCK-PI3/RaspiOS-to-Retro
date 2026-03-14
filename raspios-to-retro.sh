@@ -24,10 +24,7 @@ EOF'
 
 # 2. Dependencias esenciales y Drivers Vulkan
 echo "Instalando dependencias y drivers Mesa (Vulkan)..."
-sudo apt install -y build-essential git cmake libasound2-dev libpulse-dev \
-libwayland-dev libx11-dev libxkbcommon-dev libegl1-mesa-dev \
-libgles2-mesa-dev libgbm-dev libdrm-dev mesa-vulkan-drivers ffmpeg \
-python3-dev libusb-1.0-0-dev liblua5.3-dev libavcodec-dev libavformat-dev
+sudo apt install -y build-essential git cmake libasound2-dev libpulse-dev libwayland-dev libx11-dev libxkbcommon-dev libegl1-mesa-dev libgles2-mesa-dev libgbm-dev libdrm-dev mesa-vulkan-drivers ffmpeg python3-dev libusb-1.0-0-dev liblua5.3-dev libavcodec-dev libavformat-dev
 
 # 3. Instalación de RetroArch (Compilado para Pi 5)
 echo "Compilando RetroArch..."
@@ -36,13 +33,17 @@ git clone --depth 1 https://github.com/libretro/RetroArch.git
 cd RetroArch
 ./fetch-submodules.sh
 # DESCARGAR RETROARCH EN SU ULTIMA VERSION --->
-export CFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
-export CXXFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
-./configure --enable-floathard --enable-neon --enable-7zip --enable-x11 --enable-wayland --enable-sdl2 --enable-ffmpeg --enable-udev --enable-pulse --enable-freetype --enable-alsa --enable-opengles --enable-vulkan --enable-opengl
-make -j4
-sudo make install
+#export CFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
+#export CXXFLAGS='-O3 -march=armv8.2-a+crc+simd -mtune=cortex-a76 -mcpu=cortex-a76 -ffast-math -ftree-vectorize'
+#./configure --enable-floathard --enable-7zip --enable-x11 --enable-wayland --enable-vulkan --enable-opengl
+#make -j4
+#sudo make install
 #cd && sudo rm -R RetroArch/
-
+export CFLAGS="-Ofast -mcpu=cortex-a76 -mtune=cortex-a76"
+./configure --enable-vulkan --enable-egl --enable-gbm --enable-drm --enable-kms \
+            --disable-x11 --disable-wayland --enable-floathard --enable-neon
+make -j$(nproc)
+sudo make install
 
 # 4. Instalación de EmulationStation-DE
 echo "Instalando EmulationStation-DE..."
