@@ -35,13 +35,11 @@ cd ~
 set -e
 
 echo "Actualizando el sistema..."
-sudo apt update && sudo apt upgrade -y
-
 echo "Instalando dependencias necesarias..."
-sudo apt install -y git build-essential devscripts libusb-1.0-0-dev \
-libudev-dev libavformat-dev libavcodec-dev libswscale-dev \
-libasound2-dev libpulse-dev libvulkan-dev libgbm-dev libdrm-dev \
-libxkbcommon-dev libwayland-dev wayland-protocols
+sudo apt install -y build-essential git libudev-dev libegl-dev libgles-dev \
+libasound2-dev libpulse-dev libdrm-dev libgbm-dev libfreetype6-dev \
+libxkbcommon-dev libxml2-dev zlib1g-dev libavcodec-dev libavformat-dev \
+libswscale-dev libavdevice-dev libvulkan-dev mesa-vulkan-drivers yasm
 
 # Clonar repositorio oficial
 if [ ! -d "RetroArch" ]; then
@@ -52,7 +50,7 @@ cd RetroArch
 
 echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
 # Optimizaciones específicas para RPi 5 y desactivación de X11
-./configure --enable-kms --enable-egl --enable-vulkan --disable-x11 --enable-udev --enable-alsa --enable-floathard --enable-neon
+CFLAGS="-march=native -O3" ./configure --enable-vulkan --enable-kms --enable-egl --enable-gbm --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
 
 echo "Compilando (esto puede tardar unos minutos)..."
 make -j$(nproc)
@@ -109,20 +107,7 @@ echo "ES-DE compilado e instalado con éxito."
 
 
 # 5. Configuración de Auto-Arranque (Modo Kiosk)
-echo "Configurando mini escritorio y arranque directo a ES-DE..."
-sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y libx264-dev libjpeg-dev neofetch
-# install the remaining plugins
-sudo apt-get install -y libgstreamer1.0-0 libgstreamer-gl1.0-0 libgstreamer-plugins-base1.0-0 gstreamer1.0-gl gstreamer1.0-pulseaudio gstreamer1.0-plugins-good 
-sudo apt-get install -y git g++ cmake dos2unix zlib1g-dev libsdl2-2.0 libsdl2-mixer-2.0 libsdl2-image-2.0 libsdl2-ttf-2.0
-sudo apt-get install -y libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
-sudo apt-get install -y gstreamer1.0-libav zlib1g-dev libglib2.0-0 libglib2.0-dev libavcodec-extra sqlite3
-sudo apt-get install -y gstreamer1.0-omx-* gstreamer1.0-plugins-bad
-# Dependencia para hacer el make y ejecutar retrofe en buster RPI4 - retrofe #
-# ----> sudo Xorg :0 -configure uuu :0.0
-sudo apt-get install -y xinit xterm xorg xorg-dev xorg-server-source menu openbox obconf thunar pulseaudio pulseaudio-utils
-sudo apt-get install -y git g++ cmake dos2unix zlib1g-dev libsdl2* zlib1g-dev libglib2.0-0 libglib2.0-dev sqlite3
-#Descargar y vlc y mpv
-sudo apt install -y mpv xserver-xorg x11-xserver-utils
+
 
 # --- CONFIGURACIÓN DE VIDEO VULKAN (CLAVE PARA PI 5) ---
 # Forzamos a RetroArch a usar Vulkan y el driver de video correcto
@@ -154,7 +139,7 @@ EOF
 
 echo "Cores instalados y configurados para Vulkan."
 sleep 2
-echo "Instalación finalizada. Reiniciando.... " 
+echo "Instalación de ES-DE y RetroArch finalizada. Reiniciando.... " 
 sleep 3
 
 #sudo reboot
