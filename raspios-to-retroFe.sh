@@ -28,14 +28,14 @@ cd retroarch
 # Flags específicos para Raspberry Pi 5 y arquitectura ARM64
 export CFLAGS="-Ofast -mcpu=cortex-a76 -mtune=cortex-a76"
 ./configure --enable-vulkan --enable-egl --enable-gbm --enable-drm --enable-kms \
-            --disable-x11 --disable-wayland --enable-floathard --enable-neon
+            --enable-x11 --enable-wayland --enable-floathard --enable-neon
 make -j$(nproc)
 sudo make install
 
 # --- 4. COMPILACIÓN DE CORES SELECCIONADOS ---
 # Se recomienda usar libretro-super para gestionar la descarga y compilación
 cd ~
-git clone --depth 1 https://github.com
+git clone --depth 1 https://github.com/libretro/libretro-super
 cd libretro-super
 # Compilamos cores de alto rendimiento recomendados para RPi5
 ./libretro-fetch.sh flycast genesis_plus_gx snes9x picodrive mgba mupen64plus_next
@@ -45,7 +45,7 @@ cp dist/unix/*.so ~/.config/retroarch/cores/
 
 # --- 5. COMPILACIÓN DE RETROFE (Frontend) ---
 cd ~
-git clone https://github.com
+git clone https://github.com/phulshof/RetroFE
 cd RetroFE/RetroFE
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release

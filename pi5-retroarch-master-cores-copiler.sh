@@ -16,6 +16,7 @@ sudo apt install -y git build-essential cmake pkg-config libvulkan-dev \
 libgles2-mesa-dev libgbm-dev libdrm-dev libasound2-dev libudev-dev \
 libfreetype6-dev libxml2-dev libx11-dev libxkbcommon-dev curl jq
 
+
 # --- OBTENCIÓN DINÁMICA DE REPOS DE CORES ---
 echo "Consultando todos los repositorios de cores en Libretro..."
 # Usamos 'jq' para extraer solo los nombres de repositorios que son cores
