@@ -32,7 +32,7 @@ cd ~
 
 # Script para instalar RetroArch en RPi 5 (OS Lite 64-bit) modo KMS
 
-set -e
+#set -e
 
 echo "Actualizando el sistema..."
 echo "Instalando dependencias necesarias..."
@@ -53,6 +53,7 @@ cd RetroArch
 export CFLAGS="-march=armv8-a+crc+simd -O3"
 export CXXFLAGS="-march=armv8-a+crc+simd -O3"
 echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
+./fetch-submodules.sh
 # Optimizaciones específicas para RPi 5 y desactivación de X11
 #./configure --enable-vulkan --enable-kms --enable-egl --enable-udev --enable-alsa --enable-ssl --disable-x11 --disable-wayland
 ./configure --enable-kms --enable-egl --enable-vulkan --enable-udev --disable-neon --disable-sdl --enable-sdl2 --disable-oss --enable-x11 --enable-wayland --disable-al --disable-jack --disable-qt --enable-builtinmbedtls
