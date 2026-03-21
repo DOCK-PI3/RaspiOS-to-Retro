@@ -50,8 +50,8 @@ sudo apt install -y libusb-1.0-0-dev
 #fi
 
 #cd RetroArch
-#export CFLAGS="-march=armv8-a+crc+simd -O3"
-#export CXXFLAGS="-march=armv8-a+crc+simd -O3"
+export CFLAGS="-march=armv8-a+crc+simd -O3"
+export CXXFLAGS="-march=armv8-a+crc+simd -O3"
 #echo "Configurando compilación para RPi 5 (KMS/Vulkan)..."
 #./fetch-submodules.sh
 # Optimizaciones específicas para RPi 5 y desactivación de X11
@@ -65,7 +65,56 @@ sudo apt install -y libusb-1.0-0-dev
 
 #echo "Instalación completada. Puedes iniciar con el comando: retroarch"
 
-# 4. Instalación de EmulationStation-DE
+# 1. Instalación de dependencias
+echo "--- Instalando dependencias (git, unzip, p7zip) ---"
+sudo apt install -y git unzip p7zip-full
+
+# 2. Configuración
+REPO_URL="https://github.com/DOCK-PI3/Rpi5_Retroarch_CORES_AARCH64"
+TEMP_DIR="$HOME/temp_retro_cores"
+TARGET_DIR="$HOME/.config/retroarch/cores"
+
+# Crear directorios necesarios
+mkdir -p "$TEMP_DIR"
+mkdir -p "$TARGET_DIR"
+
+# 3. Descarga del repositorio
+echo "--- Descargando repositorio de DOCK-PI3 ---"
+if [ -d "$TEMP_DIR/.git" ]; then
+    cd "$TEMP_DIR" && git pull
+else
+    git clone --depth 1 "$REPO_URL" "$TEMP_DIR"
+fi
+
+# 4. Extracción de archivos
+echo "--- Extrayendo núcleos... ---"
+# Directorio temporal para la extracción
+EXTRACT_PATH="$TEMP_DIR/extracted_cores"
+mkdir -p "$EXTRACT_PATH"
+
+# Extraer .zip
+find "$TEMP_DIR" -maxdepth 1 -name "*.zip" -exec unzip -o {} -d "$EXTRACT_PATH" \;
+
+# Extraer .7z (maneja también archivos divididos como .7z.001)
+# Buscamos el primer archivo de la secuencia para que 7z los una automáticamente
+find "$TEMP_DIR" -maxdepth 1 -name "*.7z.001" -exec 7z x -y {} -o"$EXTRACT_PATH" \;
+# Y archivos .7z normales si los hubiera
+find "$TEMP_DIR" -maxdepth 1 -name "*.7z" ! -name "*.7z.[0-9]*" -exec 7z x -y {} -o"$EXTRACT_PATH" \;
+
+# 5. Instalación en RetroArch
+echo "--- Copiando archivos .so a $TARGET_DIR ---"
+find "$EXTRACT_PATH" -name "*.so" -exec cp {} "$TARGET_DIR" \;
+cd "$TARGET_DIR" && sudo chmod +x *.so
+cd 
+
+# 6. Limpieza
+echo "--- Limpiando archivos temporales ---"
+rm -rf "$TEMP_DIR"
+
+echo "¡Proceso completado! Los cores optimizados para RPi5 ya están en su sitio."
+
+
+# 7. Instalación de EmulationStation-DE
 echo "Instalando EmulationStation-DE..."
 
 # --- 1. PREPARACIÓN Y DEPENDENCIAS DE COMPILACIÓN ---
@@ -111,11 +160,11 @@ EOF
 echo "ES-DE compilado e instalado con éxito."
 
 
-# 5. Configuración de Auto-Arranque (Modo Kiosk)
+# 8. Configuración de Auto-Arranque (Modo Kiosk) PROXIMO
 
 
 # --- CONFIGURACIÓN DE VIDEO VULKAN (CLAVE PARA PI 5) ---
-# Forzamos a RetroArch a usar Vulkan y el driver de video correcto
+# 9.Forzamos a RetroArch a usar Vulkan y el driver de video correcto
 cat <<EOF > ~/.config/retroarch/retroarch.cfg
 video_driver = "vulkan"
 menu_driver = "ozone"
@@ -126,7 +175,7 @@ libretro_directory = "~/.config/retroarch/cores"
 EOF
 
 # --- VINCULACIÓN CON EMULATIONSTATION-DE ---
-# Creamos el archivo de configuración de sistemas para que ES-DE use nuestros cores
+# 10.Creamos el archivo de configuración de sistemas para que ES-DE use nuestros cores
 mkdir -p ~/ES-DE/custom_systems
 cat <<EOF > ~/ES-DE/es_systems.xml
 <systemList>
@@ -135,7 +184,7 @@ cat <<EOF > ~/ES-DE/es_systems.xml
         <fullname>PlayStation</fullname>
         <path>~/ROMs/psx</path>
         <extension>.cue .CUE .chd .CHD .img .IMG</extension>
-        <command>retroarch -L ~/.config/retroarch/cores/duckstation_libretro.so %ROM%</command>
+        <command>retroarch -L ~/.config/retroarch/cores/swanstation_libretro.so %ROM%</command>
         <platform>psx</platform>
         <theme>psx</theme>
     </system>
