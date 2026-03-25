@@ -42,7 +42,7 @@ sudo apt install -y libc6-dev libc6-dev-arm64-cross libsigc++-3.0-dev libegl1-me
 # INSTALAR DEPENDENCIAS DESPUES DE ACTUALIZAR LISTA DE PAQUETES --->
 sudo apt install -y libasound2-dev libudev-dev libxkbcommon-dev zlib1g-dev libfreetype6-dev libegl1-mesa-dev libgles2-mesa-dev libgbm-dev libavcodec-dev libsdl2-dev libsdl-image1.2-dev libxml2-dev yasm libavformat-dev libavdevice-dev libswresample-dev libswscale-dev libv4l-dev libgl*-mesa-dev
 sudo apt install -y xcb-proto libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev
-sudo apt install -y libusb-1.0-0-dev clang
+sudo apt install -y libusb-1.0-0-dev clang unzip p7zip-full
 sudo apt -y install build-essential git wget libdrm-dev python3-full python3-pip python3-setuptools python3-wheel ninja-build libopenal-dev premake4 autoconf libevdev-dev ffmpeg libsnappy-dev libboost-tools-dev magics++ libboost-thread-dev libboost-all-dev pkg-config zlib1g-dev libpng-dev libsdl2-dev clang cmake cmake-data libarchive13 libcurl4 libfreetype6-dev libuv1 mercurial mercurial-common
 
 ln -s /usr/include/libdrm/ /usr/include/drm
@@ -73,7 +73,7 @@ else
     exit 1
 fi
 
-cd RetroArch-${VERSION}
+cd ~/RetroArch-${VERSION}
 
 export CFLAGS="-Ofast -march=armv8-a+crc+simd -O3"
 export CXXFLAGS="-Ofast -march=armv8-a+crc+simd -O3"
@@ -94,7 +94,6 @@ echo "Instalación completada. Puedes iniciar con el comando: retroarch"
 
 # 1. Instalación de dependencias
 echo "--- Descarga de cores, Instalando dependencias (git, unzip, p7zip) ---"
-sudo apt install -y git unzip p7zip-full
 
 # 2. Configuración
 REPO_URL="https://github.com/DOCK-PI3/Rpi5_Retroarch_CORES_AARCH64"
@@ -209,4 +208,4 @@ sudo usermod -a -G video,render,audio $USER
 echo "ES-DE y RetroArch con sus Cores instalados y configurados para Vulkan. Reiniciando.... " 
 sleep 3
 
-#sudo reboot
+sudo reboot
